@@ -18,5 +18,8 @@
         "campaignchain/operation-twitter": "dev-master",
         "campaignchain/hook-due": "dev-master",
         "campaignchain/hook-assignee": "dev-master"
+    },
+    "autoload": {
+        "psr-4": { "CampaignChain\\Activity\\TwitterBundle\\": "" }
     }
 }
