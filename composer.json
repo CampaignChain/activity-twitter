@@ -1,0 +1,22 @@
+{
+    "name": "campaignchain/activity-twitter",
+    "description": "Post a status update (aka Tweet) on a Twitter stream.",
+    "keywords": ["twitter","status"],
+    "type": "campaignchain-activity",
+    "homepage": "http://www.campaignchain.com",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Sandro Groganz",
+            "email": "sandro@campaignchain.com"
+        }
+    ],
+    "require": {
+        "campaignchain/core": "dev-master",
+        "campaignchain/channel-twitter": "dev-master",
+        "campaignchain/location-twitter": "dev-master",
+        "campaignchain/operation-twitter": "dev-master",
+        "campaignchain/hook-due": "dev-master",
+        "campaignchain/hook-assignee": "dev-master"
+    }
+}

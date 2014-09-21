@@ -1,0 +1,24 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+campaignchain_activity_twitter_update_status_new:
+    pattern:  /activity/twitter/update-status/new
+    defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:new }
+
+campaignchain_activity_twitter_update_status_edit:
+    pattern:  /activity/twitter/update-status/{id}/edit
+    defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:edit }
+
+campaignchain_activity_twitter_update_status_edit_modal:
+    pattern:  /modal/activity/twitter/update-status/{id}/edit
+    defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:editModal }
+
+campaignchain_activity_twitter_update_status_edit_api:
+    pattern:  /api/v1/activity/twitter/update-status/byactivity/{id}/edit
+    defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:editApi }
+    options:
+        expose: true
