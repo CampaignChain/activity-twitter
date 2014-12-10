@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "campaignchain/core": "1.0.0-alpha.3",
-        "campaignchain/channel-twitter": "1.0.0-alpha.3",
-        "campaignchain/location-twitter": "1.0.0-alpha.3",
-        "campaignchain/operation-twitter": "1.0.0-alpha.3",
-        "campaignchain/hook-due": "1.0.0-alpha.3",
-        "campaignchain/hook-assignee": "1.0.0-alpha.3"
+        "campaignchain/core": "dev-master",
+        "campaignchain/channel-twitter": "dev-master",
+        "campaignchain/location-twitter": "dev-master",
+        "campaignchain/operation-twitter": "dev-master",
+        "campaignchain/hook-due": "dev-master",
+        "campaignchain/hook-assignee": "dev-master"
     },
     "autoload": {
         "psr-4": { "CampaignChain\\Activity\\TwitterBundle\\": "" }
