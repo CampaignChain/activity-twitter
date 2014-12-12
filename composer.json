@@ -13,7 +13,7 @@
     ],
     "require": {
         "campaignchain/core": "dev-1.0.0-alpha.4",
-        "campaignchain/channel-twitter": "1.0.0-alpha.3",
+        "campaignchain/channel-twitter": "dev-1.0.0-alpha.4",
         "campaignchain/location-twitter": "1.0.0-alpha.3",
         "campaignchain/operation-twitter": "dev-1.0.0-alpha.4",
         "campaignchain/hook-due": "1.0.0-alpha.3",
