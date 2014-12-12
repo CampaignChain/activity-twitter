@@ -28,6 +28,8 @@ class UpdateStatusController extends Controller
     const MODULE_IDENTIFIER = 'campaignchain-twitter-update-status';
     const OPERATION_IDENTIFIER = self::MODULE_IDENTIFIER;
 
+    const DATETIME_FORMAT_TWITTER = 'F j, Y';
+
     public function newAction(Request $request)
     {
         $wizard = $this->get('campaignchain.core.activity.wizard');
@@ -302,5 +304,70 @@ class UpdateStatusController extends Controller
 
         $response = new Response($serializer->serialize($responseData, 'json'));
         return $response->setStatusCode(Response::HTTP_OK);
+    }
+
+    public function readAction(Request $request, $id){
+        $activityService = $this->get('campaignchain.core.activity');
+        $activity = $activityService->getActivity($id);
+        $campaign = $activity->getCampaign();
+
+        // Get the one operation.
+        $operation = $activityService->getOperation($id);
+        $operationService = $this->get('campaignchain.operation.twitter.status');
+        $status = $operationService->getStatusByOperation($operation);
+
+        // Connect to Twitter REST API
+        $client = $this->container->get('campaignchain.channel.twitter.rest.client');
+        $connection = $client->connectByActivity($status->getOperation()->getActivity());
+
+        $tweetIsProtected = false;
+
+        try {
+            $request = $connection->get('statuses/oembed.json?id='.$status->getIdStr());
+            $response = $request->send()->json();
+        } catch (\Exception $e) {
+            // Check whether it is a protected tweet.
+            if(
+                'Forbidden' == $e->getResponse()->getReasonPhrase() &&
+                '403'       == $e->getResponse()->getStatusCode()
+            ){
+                $tweetIsProtected = true;
+            } else {
+                    throw new \Exception(
+                        'TWitter API error: '.
+                        'Reason: '.$e->getResponse()->getReasonPhrase().','.
+                        'Status: '.$e->getResponse()->getStatusCode().',',
+                        'URL: '.$e->getResponse()->getEffectiveUrl().'.'
+                    );
+            }
+        }
+
+        $locationTwitter = $this->getDoctrine()
+            ->getRepository('CampaignChainLocationTwitterBundle:TwitterUser')
+            ->findOneByLocation($activity->getLocation());
+
+        if($tweetIsProtected){
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'This is a protected tweet.'
+            );
+            $message = $status->getMessage();
+        } else {
+            $message = $response['html'];
+        }
+
+        $tweetUrl = $status->getUrl();
+
+        return $this->render(
+            'CampaignChainOperationTwitterBundle::read.html.twig',
+            array(
+                'page_title' => $activity->getName(),
+                'tweet_is_protected' => $tweetIsProtected,
+                'message' => $message,
+                'status' => $status,
+                'activity' => $activity,
+                'activity_date' => $activity->getStartDate()->format(self::DATETIME_FORMAT_TWITTER),
+                'location_twitter' => $locationTwitter,
+            ));
     }
 }
