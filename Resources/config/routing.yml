@@ -22,3 +22,7 @@ campaignchain_activity_twitter_update_status_edit_api:
     defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:editApi }
     options:
         expose: true
+
+campaignchain_activity_twitter_update_status_read:
+    pattern:  /activity/twitter/update-status/{id}
+    defaults: { _controller: CampaignChainActivityTwitterBundle:UpdateStatus:read }
