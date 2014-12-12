@@ -10,12 +10,12 @@ modules:
         display_name: 'Update Status'
         channels:
             - campaignchain/channel-twitter/campaignchain-twitter
-            - campaignchain/channel-facebook/campaignchain-facebook
         routes:
             new: campaignchain_activity_twitter_update_status_new
             edit: campaignchain_activity_twitter_update_status_edit
             edit_modal: campaignchain_activity_twitter_update_status_edit_modal
             edit_api: campaignchain_activity_twitter_update_status_edit_api
+            read: campaignchain_activity_twitter_update_status_read
         hooks:
             campaignchain-due: true
             campaignchain-duration: false
