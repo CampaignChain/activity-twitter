@@ -134,11 +134,17 @@ class UpdateStatusController extends Controller
         }
 
         return $this->render(
-            'CampaignChainCoreBundle:Base:new.html.twig',
+            'CampaignChainCoreBundle:Operation:new.html.twig',
             array(
                 'page_title' => 'New Twitter Status',
-                'page_secondary_title' => 'Campaign "'.$campaign->getName().'"',
+                'activity' => $activity,
+                'campaign' => $campaign,
+                'channel_module' => $wizard->getChannelModule(),
+                'channel_module_bundle' => $wizard->getChannelModuleBundle(),
+                'location' => $wizard->getLocation(),
                 'form' => $form->createView(),
+                'form_submit_label' => 'Save',
+                'form_cancel_route' => 'campaignchain_core_activities_new'
             ));
 
     }
@@ -214,11 +220,13 @@ class UpdateStatusController extends Controller
         }
 
         return $this->render(
-            'CampaignChainCoreBundle:Base:new.html.twig',
+            'CampaignChainCoreBundle:Operation:new.html.twig',
             array(
                 'page_title' => 'Edit Twitter Status',
-                'page_secondary_title' => 'Campaign "'.$campaign->getName().'"',
+                'activity' => $activity,
                 'form' => $form->createView(),
+                'form_submit_label' => 'Save',
+                'form_cancel_route' => 'campaignchain_core_activities'
             ));
     }
 
