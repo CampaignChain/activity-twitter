@@ -314,7 +314,8 @@ class UpdateStatusController extends Controller
         return $response->setStatusCode(Response::HTTP_OK);
     }
 
-    public function readAction(Request $request, $id){
+    public function readAction(Request $request, $id)
+    {
         $activityService = $this->get('campaignchain.core.activity');
         $activity = $activityService->getActivity($id);
         $campaign = $activity->getCampaign();
@@ -325,7 +326,7 @@ class UpdateStatusController extends Controller
         $status = $operationService->getStatusByOperation($operation);
 
         // Connect to Twitter REST API
-        $client = $this->container->get('campaignchain.channel.twitter.rest.client');
+        $client = $this->get('campaignchain.channel.twitter.rest.client');
         $connection = $client->connectByActivity($status->getOperation()->getActivity());
 
         $tweetIsProtected = false;
