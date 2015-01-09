@@ -35,6 +35,7 @@ class UpdateStatusController extends Controller
         $wizard = $this->get('campaignchain.core.activity.wizard');
         $campaign = $wizard->getCampaign();
         $activity = $wizard->getActivity();
+        $location = $wizard->getLocation();
 
         $activity->setEqualsOperation(true);
 
@@ -42,6 +43,11 @@ class UpdateStatusController extends Controller
         $activityType->setBundleName(self::BUNDLE_NAME);
         $activityType->setModuleIdentifier(self::MODULE_IDENTIFIER);
         $updateStatusOperation = new UpdateStatusOperationType($this->getDoctrine()->getManager(), $this->get('service_container'));
+
+        $locationService = $this->get('campaignchain.core.location');
+        $location = $locationService->getLocation($location->getId());
+        $updateStatusOperation->setLocation($location);
+
         $operationForms[] = array(
             'identifier' => self::OPERATION_IDENTIFIER,
             'form' => $updateStatusOperation,
