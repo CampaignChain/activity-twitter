@@ -335,25 +335,36 @@ class UpdateStatusController extends Controller
         $client = $this->get('campaignchain.channel.twitter.rest.client');
         $connection = $client->connectByActivity($status->getOperation()->getActivity());
 
-        $tweetIsProtected = false;
+        $isProtected = false;
+        $notAccessible = false;
 
         try {
             $request = $connection->get('statuses/oembed.json?id='.$status->getIdStr());
             $response = $request->send()->json();
+            $message = $response['html'];
         } catch (\Exception $e) {
             // Check whether it is a protected tweet.
             if(
                 'Forbidden' == $e->getResponse()->getReasonPhrase() &&
                 '403'       == $e->getResponse()->getStatusCode()
             ){
-                $tweetIsProtected = true;
+                $this->get('session')->getFlashBag()->add(
+                    'warning',
+                    'This is a protected tweet.'
+                );
+                $message = $status->getMessage();
             } else {
-                    throw new \Exception(
-                        'TWitter API error: '.
-                        'Reason: '.$e->getResponse()->getReasonPhrase().','.
-                        'Status: '.$e->getResponse()->getStatusCode().',',
-                        'URL: '.$e->getResponse()->getEffectiveUrl().'.'
-                    );
+//                    throw new \Exception(
+//                        'TWitter API error: '.
+//                        'Reason: '.$e->getResponse()->getReasonPhrase().','.
+//                        'Status: '.$e->getResponse()->getStatusCode().','
+//                    );
+                $this->get('session')->getFlashBag()->add(
+                    'warning',
+                    'This Tweet might not have been published yet.'
+                );
+                $message = $status->getMessage();
+                $notAccessible = true;
             }
         }
 
@@ -361,23 +372,14 @@ class UpdateStatusController extends Controller
             ->getRepository('CampaignChainLocationTwitterBundle:TwitterUser')
             ->findOneByLocation($activity->getLocation());
 
-        if($tweetIsProtected){
-            $this->get('session')->getFlashBag()->add(
-                'warning',
-                'This is a protected tweet.'
-            );
-            $message = $status->getMessage();
-        } else {
-            $message = $response['html'];
-        }
-
         $tweetUrl = $status->getUrl();
 
         return $this->render(
             'CampaignChainOperationTwitterBundle::read.html.twig',
             array(
                 'page_title' => $activity->getName(),
-                'tweet_is_protected' => $tweetIsProtected,
+                'tweet_is_protected' => $isProtected,
+                'tweet_not_accessible' => $notAccessible,
                 'message' => $message,
                 'status' => $status,
                 'activity' => $activity,
