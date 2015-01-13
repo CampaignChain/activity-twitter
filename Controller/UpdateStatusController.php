@@ -129,7 +129,7 @@ class UpdateStatusController extends Controller
             // Status Update to be sent immediately?
             // TODO: This is an intermediary hardcoded hack and should be instead handled by the scheduler.
             if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
-                $job = $this->get('campaignchain.operation.twitter.job.update_status');
+                $job = $this->get('campaignchain.job.operation.twitter.update_status');
                 $job->execute($operation->getId());
                 // TODO: Add different flashbag which includes link to posted message on Facebook
             }
@@ -205,7 +205,7 @@ class UpdateStatusController extends Controller
 
 //            // Status Update should be sent immediately
 //            if ($form->get('actions')->get('send')->isClicked()) {
-//                $job = $this->get('campaignchain.operation.twitter.job.update_status');
+//                $job = $this->get('campaignchain.job.operation.twitter.update_status');
 //                $job->execute($operation);
 //
 //                // TODO: If this previously was a scheduled activity, then reset the schedule
@@ -217,7 +217,7 @@ class UpdateStatusController extends Controller
             );
 
             if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
-                $job = $this->get('campaignchain.operation.twitter.job.update_status');
+                $job = $this->get('campaignchain.job.operation.twitter.update_status');
                 $job->execute($operation->getId());
                 // TODO: Add different flashbag which includes link to posted message on Facebook
             }
@@ -306,7 +306,7 @@ class UpdateStatusController extends Controller
 
 //        // Status Update should be sent immediately
 //        if (isset($data['actions']['send']) && $data['actions']['send'] == 1) {
-//            $job = $this->get('campaignchain.operation.twitter.job.update_status');
+//            $job = $this->get('campaignchain.job.operation.twitter.update_status');
 //            $job->execute($operation);
 //            // TODO: Add different flashbag which includes link to posted message on Facebook
 //            // TODO: If this previously was a scheduled activity, then reset the schedule
