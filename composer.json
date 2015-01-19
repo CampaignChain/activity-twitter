@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "campaignchain/core": "dev-1.0.0-alpha.4",
-        "campaignchain/location-twitter": "dev-1.0.0-alpha.4",
-        "campaignchain/operation-twitter": "dev-1.0.0-alpha.4",
-        "campaignchain/hook-due": "dev-1.0.0-alpha.4",
+        "campaignchain/core": "1.0.0-alpha.4",
+        "campaignchain/location-twitter": "1.0.0-alpha.4",
+        "campaignchain/operation-twitter": "1.0.0-alpha.4",
+        "campaignchain/hook-due": "1.0.0-alpha.4",
         "campaignchain/hook-assignee": "1.0.0-alpha.3"
     },
     "autoload": {
