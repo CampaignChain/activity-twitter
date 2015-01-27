@@ -12,16 +12,19 @@
         }
     ],
     "require": {
-        "campaignchain/core": "1.0.0-alpha.4",
-        "campaignchain/location-twitter": "1.0.0-alpha.4",
-        "campaignchain/operation-twitter": "1.0.0-alpha.4",
-        "campaignchain/hook-due": "1.0.0-alpha.4",
-        "campaignchain/hook-assignee": "1.0.0-alpha.3"
+        "campaignchain/core": "1.0.0@beta - 1.0.0@rc",
+        "campaignchain/location-twitter": "1.0.0@beta - 1.0.0@rc",
+        "campaignchain/operation-twitter": "1.0.0@beta - 1.0.0@rc",
+        "campaignchain/hook-due": "1.0.0@alpha - 1.0.0@rc",
+        "campaignchain/hook-assignee": "1.0.0@alpha - 1.0.0@rc"
     },
     "autoload": {
         "psr-4": { "CampaignChain\\Activity\\TwitterBundle\\": "" }
     },
     "extra": {
+        "branch-alias": {
+            "dev-1.0.0-beta.1": "1.0.0-dev"
+        },
         "campaignchain": {
             "kernel": {
                 "classes": [
