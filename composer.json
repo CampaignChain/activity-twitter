@@ -22,9 +22,6 @@
         "psr-4": { "CampaignChain\\Activity\\TwitterBundle\\": "" }
     },
     "extra": {
-        "branch-alias": {
-            "dev-1.0.0-beta.1": "1.0.x-dev"
-        },
         "campaignchain": {
             "kernel": {
                 "classes": [
