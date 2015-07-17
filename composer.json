@@ -1,7 +1,7 @@
 {
     "name": "campaignchain/activity-twitter",
     "description": "Post a status update (aka Tweet) on a Twitter stream.",
-    "keywords": ["twitter","status"],
+    "keywords": ["twitter","status","campaignchain"],
     "type": "campaignchain-activity",
     "homepage": "http://www.campaignchain.com",
     "license": "Apache-2.0",
