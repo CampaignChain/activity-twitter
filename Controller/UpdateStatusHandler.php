@@ -10,18 +10,8 @@
 
 namespace CampaignChain\Activity\TwitterBundle\Controller;
 
-use CampaignChain\CoreBundle\Entity\Location;
-use CampaignChain\CoreBundle\Entity\Medium;
-use CampaignChain\Operation\TwitterBundle\EntityService\Status;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use CampaignChain\Operation\TwitterBundle\Form\Type\UpdateStatusOperationType;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 class UpdateStatusHandler
 {
@@ -35,5 +25,11 @@ class UpdateStatusHandler
     public function getOperationDetail(Operation $operation)
     {
         return $this->operationService->getStatusByOperation($operation);
+    }
+
+    public function processOperationDetail(Operation $operation, $data)
+    {
+        $status = $this->operationService->getStatusByOperation($operation);
+        return $status->setMessage($data['message']);
     }
 }
