@@ -27,5 +27,9 @@ services:
             - [setParameters, ["%campaignchain.activity.twitter.update_status%"]]
     campaignchain.activity.controller.handler.twitter.update_status:
         class: CampaignChain\Activity\TwitterBundle\Controller\UpdateStatusHandler
-        calls:
-            - [setOperationService, ["@campaignchain.operation.twitter.status"]]
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@campaignchain.operation.twitter.status"
+            - "@campaignchain.channel.twitter.rest.client"
+            - "@session"
+            - "@templating"
