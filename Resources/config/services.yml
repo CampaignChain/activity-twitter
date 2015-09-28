@@ -13,6 +13,7 @@ parameters:
         operation_module_identifier: "campaignchain-twitter-update-status"
         location_bundle_name: "campaignchain/location-twitter"
         location_module_identifier: "campaignchain-twitter-status"
+        handler: "campaignchain.activity.controller.handler.twitter.update_status"
         equals_operation: true
         operation_forms:
             - "CampaignChain\Operation\TwitterBundle\Form\Type\UpdateStatusOperationType"
@@ -22,5 +23,9 @@ services:
     campaignchain.activity.controller.twitter.update_status:
         class: CampaignChain\CoreBundle\Controller\Module\ActivityModuleController
         calls:
-            - [setContainer, [@service_container]]
+            - [setContainer, ["@service_container"]]
             - [setParameters, ["%campaignchain.activity.twitter.update_status%"]]
+    campaignchain.activity.controller.handler.twitter.update_status:
+        class: CampaignChain\Activity\TwitterBundle\Controller\UpdateStatusHandler
+        calls:
+            - [setOperationService, ["@campaignchain.operation.twitter.status"]]
