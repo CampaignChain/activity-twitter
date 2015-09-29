@@ -16,7 +16,7 @@ parameters:
         handler: "campaignchain.activity.controller.handler.twitter.update_status"
         equals_operation: true
         operation_forms:
-            - "CampaignChain\Operation\TwitterBundle\Form\Type\UpdateStatusOperationType"
+            - "CampaignChain\\Operation\\TwitterBundle\\Form\\Type\\UpdateStatusOperationType"
         operation_job: "campaignchain.job.operation.twitter.update_status"
 
 services:

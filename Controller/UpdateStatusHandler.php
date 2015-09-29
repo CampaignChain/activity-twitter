@@ -11,13 +11,15 @@
 namespace CampaignChain\Activity\TwitterBundle\Controller;
 
 use CampaignChain\Channel\TwitterBundle\REST\TwitterClient;
+use CampaignChain\CoreBundle\Controller\Module\ActivityModuleHandlerInterface;
+use CampaignChain\CoreBundle\Entity\Location;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
 
-class UpdateStatusHandler
+class UpdateStatusHandler implements ActivityModuleHandlerInterface
 {
     const DATETIME_FORMAT_TWITTER = 'F j, Y';
 
@@ -42,9 +44,13 @@ class UpdateStatusHandler
         $this->templating = $templating;
     }
 
-    public function getOperationDetail(Operation $operation)
+    public function getOperationDetail(Location $location, Operation $operation = null)
     {
-        return $this->detailService->getStatusByOperation($operation);
+        if($operation) {
+            return $this->detailService->getStatusByOperation($operation);
+        }
+
+        return null;
     }
 
     public function processOperationDetail(Operation $operation, $data)
