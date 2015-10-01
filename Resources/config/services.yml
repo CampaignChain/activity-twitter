@@ -7,16 +7,13 @@
 
 parameters:
     campaignchain.activity.twitter.update_status:
-        activity_bundle_name: "campaignchain/activity-twitter"
-        activity_module_identifier: "campaignchain-twitter-update-status"
-        operation_bundle_name: "campaignchain/operation-twitter"
-        operation_module_identifier: "campaignchain-twitter-update-status"
-        location_bundle_name: "campaignchain/location-twitter"
-        location_module_identifier: "campaignchain-twitter-status"
-        handler: "campaignchain.activity.controller.handler.twitter.update_status"
+        bundle_name: "campaignchain/activity-twitter"
+        module_identifier: "campaignchain-twitter-update-status"
+        location: %campaignchain.location.twitter.status%
         equals_operation: true
-        operation_forms:
-            - "CampaignChain\\Operation\\TwitterBundle\\Form\\Type\\UpdateStatusOperationType"
+        operations:
+            - %campaignchain.operation.twitter.update_status%
+        controller_handler: "campaignchain.activity.controller.handler.twitter.update_status"
         operation_job: "campaignchain.job.operation.twitter.update_status"
 
 services:

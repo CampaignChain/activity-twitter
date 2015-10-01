@@ -11,15 +11,16 @@
 namespace CampaignChain\Activity\TwitterBundle\Controller;
 
 use CampaignChain\Channel\TwitterBundle\REST\TwitterClient;
-use CampaignChain\CoreBundle\Controller\Module\ActivityModuleHandlerInterface;
-use CampaignChain\CoreBundle\Entity\Location;
+use CampaignChain\CoreBundle\Controller\Module\AbstractActivityModuleHandler;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
+use CampaignChain\CoreBundle\Entity\Activity;
+use CampaignChain\CoreBundle\Entity\Location;
 
-class UpdateStatusHandler implements ActivityModuleHandlerInterface
+class UpdateStatusHandler extends AbstractActivityModuleHandler
 {
     const DATETIME_FORMAT_TWITTER = 'F j, Y';
 
@@ -53,13 +54,21 @@ class UpdateStatusHandler implements ActivityModuleHandlerInterface
         return null;
     }
 
-    public function processOperationDetail(Operation $operation, $data)
+    public function processOperationDetails(Operation $operation, $data)
     {
-        $status = $this->detailService->getStatusByOperation($operation);
-        return $status->setMessage($data['message']);
+        try {
+            // If the status has already been created, we modify its data.
+            $status = $this->detailService->getStatusByOperation($operation);
+            $status->setMessage($data['message']);
+        } catch (\Exception $e) {
+            // Status has not been created yet, so do it from the form data.
+            $status = $data;
+        }
+
+        return $status;
     }
 
-    public function readOperationDetail(Operation $operation)
+    public function readOperationDetailsAction(Operation $operation)
     {
         $status = $this->detailService->getStatusByOperation($operation);
 
@@ -79,7 +88,7 @@ class UpdateStatusHandler implements ActivityModuleHandlerInterface
                 'Forbidden' == $e->getResponse()->getReasonPhrase() &&
                 '403'       == $e->getResponse()->getStatusCode()
             ){
-                $this->get('session')->getFlashBag()->add(
+                $this->session->getFlashBag()->add(
                     'warning',
                     'This is a protected tweet.'
                 );
