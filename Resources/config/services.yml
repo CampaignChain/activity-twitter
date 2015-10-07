@@ -13,8 +13,7 @@ parameters:
         equals_operation: true
         operations:
             - %campaignchain.operation.twitter.update_status%
-        controller_handler: "campaignchain.activity.controller.handler.twitter.update_status"
-        operation_job: "campaignchain.job.operation.twitter.update_status"
+        handler: "campaignchain.activity.controller.handler.twitter.update_status"
 
 services:
     campaignchain.activity.controller.twitter.update_status:
@@ -28,5 +27,6 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@campaignchain.operation.twitter.status"
             - "@campaignchain.channel.twitter.rest.client"
+            - "@campaignchain.job.operation.twitter.update_status"
             - "@session"
             - "@templating"

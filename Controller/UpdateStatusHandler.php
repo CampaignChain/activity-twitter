@@ -11,22 +11,24 @@
 namespace CampaignChain\Activity\TwitterBundle\Controller;
 
 use CampaignChain\Channel\TwitterBundle\REST\TwitterClient;
-use CampaignChain\CoreBundle\Controller\Module\AbstractActivityModuleHandler;
+use CampaignChain\CoreBundle\Controller\Module\AbstractActivityHandler;
+use CampaignChain\Operation\TwitterBundle\Job\UpdateStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
-use CampaignChain\CoreBundle\Entity\Activity;
+use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
 
-class UpdateStatusHandler extends AbstractActivityModuleHandler
+class UpdateStatusHandler extends AbstractActivityHandler
 {
     const DATETIME_FORMAT_TWITTER = 'F j, Y';
 
+    protected $em;
     protected $detailService;
     protected $restClient;
-    protected $em;
+    protected $job;
     protected $session;
     protected $templating;
 
@@ -34,18 +36,20 @@ class UpdateStatusHandler extends AbstractActivityModuleHandler
         EntityManager $em,
         Status $detailService,
         TwitterClient $restClient,
+        UpdateStatus $job,
         $session,
         TwigEngine $templating
     )
     {
+        $this->em = $em;
         $this->detailService = $detailService;
         $this->restClient = $restClient;
-        $this->em = $em;
+        $this->job = $job;
         $this->session = $session;
         $this->templating = $templating;
     }
 
-    public function getOperationDetail(Location $location, Operation $operation = null)
+    public function getContent(Location $location, Operation $operation = null)
     {
         if($operation) {
             return $this->detailService->getStatusByOperation($operation);
@@ -54,7 +58,7 @@ class UpdateStatusHandler extends AbstractActivityModuleHandler
         return null;
     }
 
-    public function processOperationDetails(Operation $operation, $data)
+    public function processContent(Operation $operation, $data)
     {
         try {
             // If the status has already been created, we modify its data.
@@ -68,7 +72,19 @@ class UpdateStatusHandler extends AbstractActivityModuleHandler
         return $status;
     }
 
-    public function readOperationDetailsAction(Operation $operation)
+    public function postPersistNewEvent(Operation $operation, Form $form, $content = null)
+    {
+        // Content to be published immediately?
+        $this->publishNow($operation, $form);
+    }
+
+    public function postPersistEditEvent(Operation $operation, Form $form, $content = null)
+    {
+        // Content to be published immediately?
+        $this->publishNow($operation, $form);
+    }
+
+    public function readAction(Operation $operation)
     {
         $status = $this->detailService->getStatusByOperation($operation);
 
@@ -126,5 +142,21 @@ class UpdateStatusHandler extends AbstractActivityModuleHandler
                 'activity_date' => $operation->getActivity()->getStartDate()->format(self::DATETIME_FORMAT_TWITTER),
                 'location_twitter' => $locationTwitter,
             ));
+    }
+
+    private function publishNow(Operation $operation, Form $form)
+    {
+        if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
+            $this->job->execute($operation->getId());
+            $content = $this->detailService->getStatusByOperation($operation);
+            $this->session->getFlashBag()->add(
+                'success',
+                'The Tweet was published. <a href="'.$content->getUrl().'">View it on Twitter</a>.'
+            );
+
+            return true;
+        }
+
+        return false;
     }
 }
