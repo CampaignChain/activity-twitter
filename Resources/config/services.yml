@@ -6,5 +6,27 @@
 # file that was distributed with this source code.
 
 parameters:
+    campaignchain.activity.twitter.update_status:
+        bundle_name: "campaignchain/activity-twitter"
+        module_identifier: "campaignchain-twitter-update-status"
+        location: %campaignchain.location.twitter.status%
+        equals_operation: true
+        operations:
+            - %campaignchain.operation.twitter.update_status%
+        handler: "campaignchain.activity.controller.handler.twitter.update_status"
 
 services:
+    campaignchain.activity.controller.twitter.update_status:
+        class: CampaignChain\CoreBundle\Controller\Module\ActivityModuleController
+        calls:
+            - [setContainer, ["@service_container"]]
+            - [setParameters, ["%campaignchain.activity.twitter.update_status%"]]
+    campaignchain.activity.controller.handler.twitter.update_status:
+        class: CampaignChain\Activity\TwitterBundle\Controller\UpdateStatusHandler
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@campaignchain.operation.twitter.status"
+            - "@campaignchain.channel.twitter.rest.client"
+            - "@campaignchain.job.operation.twitter.update_status"
+            - "@session"
+            - "@templating"
