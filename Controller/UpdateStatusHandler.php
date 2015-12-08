@@ -61,9 +61,13 @@ class UpdateStatusHandler extends AbstractActivityHandler
     public function processContent(Operation $operation, $data)
     {
         try {
-            // If the status has already been created, we modify its data.
-            $status = $this->detailService->getStatusByOperation($operation);
-            $status->setMessage($data['message']);
+            if(is_array($data)) {
+                // If the status has already been created, we modify its data.
+                $status = $this->detailService->getStatusByOperation($operation);
+                $status->setMessage($data['message']);
+            } else {
+                $status = $data;
+            }
         } catch (\Exception $e) {
             // Status has not been created yet, so do it from the form data.
             $status = $data;
