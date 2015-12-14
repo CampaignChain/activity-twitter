@@ -26,3 +26,9 @@ campaignchain_activity_twitter_update_status_edit_api:
 campaignchain_activity_twitter_update_status_read:
     pattern:  /activity/twitter/update-status/{id}
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:readAction }
+
+# REST routes are being created automatically via FOSRestBundle.
+campaignchain_activity_twitter_rest:
+    type:     rest
+    prefix:   /api/{version}/p/campaignchain/activity-twitter
+    resource: CampaignChain\Activity\TwitterBundle\Controller\REST\ActivityController
