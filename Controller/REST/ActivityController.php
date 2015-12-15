@@ -10,7 +10,7 @@
 
 namespace CampaignChain\Activity\TwitterBundle\Controller\REST;
 
-use CampaignChain\CoreBundle\Controller\REST\BaseController;
+use CampaignChain\CoreBundle\Controller\REST\BaseModuleController;
 use CampaignChain\CoreBundle\Entity\Activity;
 use CampaignChain\CoreBundle\Entity\Module;
 use FOS\RestBundle\Controller\Annotations as REST;
@@ -22,9 +22,86 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
-class ActivityController extends BaseController
+/**
+ * @REST\NamePrefix("campaignchain_activity_twitter_rest_")
+ *
+ * Class ActivityController
+ * @package CampaignChain\Activity\TwitterBundle\Controller\REST
+ */
+class ActivityController extends BaseModuleController
 {
     const CONTROLLER_SERVICE = 'campaignchain.activity.controller.twitter.update_status';
+
+    /**
+     * Get a specific Twitter status.
+     *
+     * Example Request
+     * ===============
+     *
+     *      GET /api/v1/p/campaignchain/activity-twitter/statuses/82
+     *
+     * Example Response
+     * ================
+     *
+    [
+        {
+            "twitter_status": {
+                "id": 26,
+                "message": "Alias quaerat natus iste libero. Et dolor assumenda odio sequi. http://www.schmeler.biz/nostrum-quia-eaque-quo-accusantium-voluptatem.html",
+                "createdDate": "2015-12-14T11:02:23+0000"
+            }
+        },
+        {
+            "status_location": {
+                "id": 63,
+                "status": "unpublished",
+                "createdDate": "2015-12-14T11:02:23+0000"
+            }
+        },
+        {
+            "activity": {
+                "id": 82,
+                "equalsOperation": true,
+                "name": "Announcement 26 on Twitter",
+                "startDate": "2012-01-10T05:23:34+0000",
+                "status": "paused",
+                "createdDate": "2015-12-14T11:02:23+0000"
+            }
+        },
+        {
+            "operation": {
+                "id": 58,
+                "name": "Announcement 26 on Twitter",
+                "startDate": "2012-01-10T05:23:34+0000",
+                "status": "open",
+                "createdDate": "2015-12-14T11:02:23+0000"
+            }
+        }
+    ]
+     *
+     * @ApiDoc(
+     *  section="Packages: Twitter",
+     *  requirements={
+     *      {
+     *          "name"="id",
+     *          "requirement"="\d+"
+     *      }
+     *  }
+     * )
+     *
+     * @param string $id The ID of an Activity, e.g. '42'.
+     *
+     * @return CampaignChain\CoreBundle\Entity\Bundle
+     */
+    public function getStatusAction($id)
+    {
+        return $this->getActivity(
+            $id,
+            array(
+                'twitter_status' => 'CampaignChain\Operation\TwitterBundle\Entity\Status',
+            )
+        );
+    }
 
     /**
      * Schedule a Twitter status
@@ -72,41 +149,17 @@ class ActivityController extends BaseController
      *  section="Packages: Twitter"
      * )
      *
-     * @REST\Post("/statuses/schedule")
+     * @REST\Post("/statuses")
      * @ParamConverter("activity", converter="fos_rest.request_body")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function scheduleStatusesAction(Request $request, Activity $activity)
+    public function postStatusesAction(Request $request, Activity $activity)
     {
-        try {
-            $activityModuleService = $this->get(self::CONTROLLER_SERVICE);
-
-            $form = $this->createForm(
-                $activityModuleService->getActivityFormType('rest'),
-                $activity
-            );
-
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-                $activity = $activityModuleService->createActivity($activity, $form);
-
-                $response = $this->forward(
-                        'CampaignChainCoreBundle:REST/Activity:getActivities',
-                        array(
-                            'id' => $activity->getId()
-                        )
-                    );
-                return $response->setStatusCode(Response::HTTP_CREATED);
-            } else {
-                return $this->errorResponse(
-                    $form
-                );
-            }
-        } catch (\Exception $e) {
-            throw new \Exception($e);
-            //return $this->errorResponse($e->getMessage(), $e->getCode());
-        }
+        return $this->postActivity(
+            'CampaignChainActivityTwitterBundle:REST/Activity:getStatus',
+            $request,
+            $activity
+        );
     }
 }
