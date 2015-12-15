@@ -29,6 +29,5 @@ campaignchain_activity_twitter_update_status_read:
 
 # REST routes are being created automatically via FOSRestBundle.
 campaignchain_activity_twitter_rest:
-    type:     rest
-    prefix:   /api/{version}/p/campaignchain/activity-twitter
-    resource: CampaignChain\Activity\TwitterBundle\Controller\REST\ActivityController
+    resource: "@CampaignChainActivityTwitterBundle/Resources/config/routing_rest.yml"
+    prefix: /api/v1/p/campaignchain/activity-twitter

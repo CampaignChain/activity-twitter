@@ -57,18 +57,16 @@ class ActivityController extends BaseController
      * Example Response
      * ================
      *
-    {
-        "response": [
-            {
-                "id": 116,
-                "equalsOperation": true,
-                "name": "My Tweet",
-                "startDate": "2015-12-20T12:00:00+0000",
-                "status": "open",
-                "createdDate": "2015-12-14T21:59:04+0000"
-            }
-        ]
-    }
+    [
+        {
+            "id": 116,
+            "equalsOperation": true,
+            "name": "My Tweet",
+            "startDate": "2015-12-20T12:00:00+0000",
+            "status": "open",
+            "createdDate": "2015-12-14T21:59:04+0000"
+        }
+    ]
      *
      * @ApiDoc(
      *  section="Packages: Twitter"
