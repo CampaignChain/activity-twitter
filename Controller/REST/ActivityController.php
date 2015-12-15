@@ -34,8 +34,8 @@ class ActivityController extends BaseController
      *
      *      POST /api/v1/p/campaignchain/activity-twitter/statuses/schedule
      *
-     * Example Content
-     * ===============
+     * Example Input
+     * =============
      *
     {
         "activity":{
