@@ -109,7 +109,7 @@ class ActivityController extends BaseModuleController
      * Example Request
      * ===============
      *
-     *      POST /api/v1/p/campaignchain/activity-twitter/statuses/schedule
+     *      POST /api/v1/p/campaignchain/activity-twitter/statuses
      *
      * Example Input
      * =============
@@ -119,7 +119,7 @@ class ActivityController extends BaseModuleController
             "name":"My Tweet",
             "location":100,
             "campaign":1,
-            "campaignchain-twitter-update-status":{
+            "campaignchain_twitter_update_status":{
                 "message":"Some test status message"
             },
             "campaignchain_hook_campaignchain_due":{
