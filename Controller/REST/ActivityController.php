@@ -134,16 +134,9 @@ class ActivityController extends BaseModuleController
      * Example Response
      * ================
      *
-    [
-        {
-            "id": 116,
-            "equalsOperation": true,
-            "name": "My Tweet",
-            "startDate": "2015-12-20T12:00:00+0000",
-            "status": "open",
-            "createdDate": "2015-12-14T21:59:04+0000"
-        }
-    ]
+     * See:
+     *
+     *      GET /api/v1/p/campaignchain/activity-twitter/statuses/{id}
      *
      * @ApiDoc(
      *  section="Packages: Twitter"
