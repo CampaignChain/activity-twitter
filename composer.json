@@ -21,7 +21,8 @@
         "campaignchain/location-twitter": "dev-master",
         "campaignchain/operation-twitter": "dev-master",
         "campaignchain/hook-due": "dev-master",
-        "campaignchain/hook-assignee": "dev-master"
+        "campaignchain/hook-assignee": "dev-master",
+        "campaignchain/hook-image": "dev-master"
     },
     "autoload": {
         "psr-4": { "CampaignChain\\Activity\\TwitterBundle\\": "" }
