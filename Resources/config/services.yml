@@ -9,11 +9,14 @@ parameters:
     campaignchain.activity.twitter.update_status:
         bundle_name: "campaignchain/activity-twitter"
         module_identifier: "campaignchain-twitter-update-status"
-        location: %campaignchain.location.twitter.status%
+        location: "%campaignchain.location.twitter.status%"
         equals_operation: true
         operations:
-            - %campaignchain.operation.twitter.update_status%
+            - "%campaignchain.operation.twitter.update_status%"
         handler: "campaignchain.activity.controller.handler.twitter.update_status"
+        hooks_options:
+            campaignchain-image:
+                number_of_images: 4
 
 services:
     campaignchain.activity.controller.twitter.update_status:
