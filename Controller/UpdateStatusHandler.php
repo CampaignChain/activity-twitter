@@ -19,10 +19,13 @@ namespace CampaignChain\Activity\TwitterBundle\Controller;
 
 use CampaignChain\Channel\TwitterBundle\REST\TwitterClient;
 use CampaignChain\CoreBundle\Controller\Module\AbstractActivityHandler;
+use CampaignChain\CoreBundle\Entity\Campaign;
+use CampaignChain\CoreBundle\Exception\ExternalApiException;
+use CampaignChain\CoreBundle\Util\ParserUtil;
+use CampaignChain\Location\TwitterBundle\Entity\TwitterUser;
 use CampaignChain\Operation\TwitterBundle\Job\UpdateStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
 use Symfony\Component\Form\Form;
@@ -38,6 +41,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
     protected $job;
     protected $session;
     protected $templating;
+    protected $maxDupliateInterval;
 
     public function __construct(
         EntityManager $em,
@@ -45,7 +49,8 @@ class UpdateStatusHandler extends AbstractActivityHandler
         TwitterClient $restClient,
         UpdateStatus $job,
         $session,
-        TwigEngine $templating
+        TwigEngine $templating,
+        $maxDuplicateInterval
     )
     {
         $this->em = $em;
@@ -54,6 +59,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
         $this->job = $job;
         $this->session = $session;
         $this->templating = $templating;
+        $this->maxDupliateInterval = $maxDuplicateInterval;
     }
 
     public function getContent(Location $location, Operation $operation = null)
@@ -169,5 +175,116 @@ class UpdateStatusHandler extends AbstractActivityHandler
         }
 
         return false;
+    }
+
+    public function checkExecutable($content)
+    {
+        return empty(ParserUtil::extractURLsFromText($content->getMessage()));
+    }
+
+    /**
+     * Search for identical Tweet content in the past 7 days if the content
+     * contains no URL.
+     *
+     * If the message contains at least one URL, then we're fine, because
+     * we will create unique shortened URLs for each time the Tweet will be
+     * posted.
+     *
+     * @param object $content
+     * @return array
+     */
+    public function isExecutableInChannel($content)
+    {
+        /*
+         * If message contains no links, find out whether it has been posted before.
+         */
+        if($this->checkExecutable($content)){
+            /** @var TwitterUser $locationTwitter */
+            $locationTwitter = $this->em
+                ->getRepository('CampaignChainLocationTwitterBundle:TwitterUser')
+                ->findOneByLocation($content->getOperation()->getActivity()->getLocation());
+
+            // Connect to Twitter REST API
+            $connection = $this->restClient->connectByActivity(
+                $content->getOperation()->getActivity()
+            );
+
+            $since = new \DateTime();
+            $since->modify('-'.$this->maxDupliateInterval);
+
+            try {
+                $request = $connection->get(
+                    'search/tweets.json?q='
+                    .urlencode(
+                        'from:'.$locationTwitter->getUsername().' '
+                        .'"'.$content->getMessage().'" '
+                        .'since:'.$since->format('Y-m-d')
+                    )
+                );
+                $response = $request->send()->json();
+                $matches = $response['statuses'];
+            } catch (\Exception $e) {
+                throw new ExternalApiException(
+                    'TWitter API error: '.
+                    'Reason: '.$e->getResponse()->getReasonPhrase().','.
+                    'Status: '.$e->getResponse()->getStatusCode().','
+                );
+            }
+
+            /*
+             * Iterate through search matches to see if these are exact matches
+             * with the provided message.
+             */
+            if(count($matches)){
+                foreach ($matches as $match) {
+                    if($match['text'] == $content->getMessage()){
+                        // Found exact match.
+                        return array(
+                            'status' => false,
+                            'message' =>
+                                'Same content has already been posted on Twitter: '
+                                .'<a href="https://twitter.com/ordnas/status/'.$match['id_str'].'">'
+                                .'https://twitter.com/ordnas/status/'.$match['id_str']
+                                .'</a>'
+                        );
+                    }
+                }
+
+                // No exact match found.
+                return array(
+                    'status' => true,
+                );
+            }
+        }
+
+        return array(
+            'status' => true,
+        );
+    }
+
+    public function isExecutableInCampaign($content)
+    {
+        /** @var Campaign $campaign */
+        $campaign = $content->getOperation()->getActivity()->getCampaign();
+
+        if($campaign->getInterval()){
+            $campaignIntervalDate = new \DateTime();
+            $campaignIntervalDate->modify($campaign->getInterval());
+            $maxDuplicateIntervalDate = new \DateTime();
+            $maxDuplicateIntervalDate->modify($this->maxDupliateInterval);
+
+            if($maxDuplicateIntervalDate > $campaignIntervalDate){
+                return array(
+                    'status' => false,
+                    'message' =>
+                        'The campaign interval must be more than '
+                        .ltrim($this->maxDupliateInterval, '+').' '
+                        .'to avoid a '
+                        .'<a href="https://twittercommunity.com/t/duplicate-tweets/13264">duplicate Tweet error</a>.'
+                );
+            }
+        }
+
+        return parent::isExecutableInCampaign($content);
     }
 }

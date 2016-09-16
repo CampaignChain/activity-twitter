@@ -40,3 +40,4 @@ services:
             - "@campaignchain.job.operation.twitter.update_status"
             - "@session"
             - "@templating"
+            - "%campaignchain_channel_twitter.max_duplicate_interval%"
