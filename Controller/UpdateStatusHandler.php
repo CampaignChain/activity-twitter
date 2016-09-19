@@ -41,7 +41,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
     protected $job;
     protected $session;
     protected $templating;
-    protected $maxDupliateInterval;
+    protected $maxDuplicateInterval;
 
     public function __construct(
         EntityManager $em,
@@ -59,7 +59,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
         $this->job = $job;
         $this->session = $session;
         $this->templating = $templating;
-        $this->maxDupliateInterval = $maxDuplicateInterval;
+        $this->maxDuplicateInterval = $maxDuplicateInterval;
     }
 
     public function getContent(Location $location, Operation $operation = null)
@@ -177,6 +177,12 @@ class UpdateStatusHandler extends AbstractActivityHandler
         return false;
     }
 
+    /**
+     * Should the content be checked whether it can be executed?
+     *
+     * @param $content
+     * @return bool
+     */
     public function checkExecutable($content)
     {
         return empty(ParserUtil::extractURLsFromText($content->getMessage()));
@@ -210,7 +216,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
             );
 
             $since = new \DateTime();
-            $since->modify('-'.$this->maxDupliateInterval);
+            $since->modify('-'.$this->maxDuplicateInterval);
 
             try {
                 $request = $connection->get(
@@ -225,9 +231,9 @@ class UpdateStatusHandler extends AbstractActivityHandler
                 $matches = $response['statuses'];
             } catch (\Exception $e) {
                 throw new ExternalApiException(
-                    'TWitter API error: '.
-                    'Reason: '.$e->getResponse()->getReasonPhrase().','.
-                    'Status: '.$e->getResponse()->getStatusCode().','
+                    $e->getResponse()->getReasonPhrase(),
+                    $e->getResponse()->getStatusCode(),
+                    $e
                 );
             }
 
@@ -271,14 +277,14 @@ class UpdateStatusHandler extends AbstractActivityHandler
             $campaignIntervalDate = new \DateTime();
             $campaignIntervalDate->modify($campaign->getInterval());
             $maxDuplicateIntervalDate = new \DateTime();
-            $maxDuplicateIntervalDate->modify($this->maxDupliateInterval);
+            $maxDuplicateIntervalDate->modify($this->maxDuplicateInterval);
 
             if($maxDuplicateIntervalDate > $campaignIntervalDate){
                 return array(
                     'status' => false,
                     'message' =>
                         'The campaign interval must be more than '
-                        .ltrim($this->maxDupliateInterval, '+').' '
+                        .ltrim($this->maxDuplicateInterval, '+').' '
                         .'to avoid a '
                         .'<a href="https://twittercommunity.com/t/duplicate-tweets/13264">duplicate Tweet error</a>.'
                 );
