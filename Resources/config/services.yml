@@ -21,6 +21,7 @@ parameters:
         operations:
             - "%campaignchain.operation.twitter.update_status%"
         handler: "campaignchain.activity.controller.handler.twitter.update_status"
+        validator: "campaignchain.activity.validator.twitter.update_status"
         hooks_options:
             campaignchain-image:
                 number_of_images: 4
@@ -40,4 +41,11 @@ services:
             - "@campaignchain.job.operation.twitter.update_status"
             - "@session"
             - "@templating"
+            - "@campaignchain.activity.validator.twitter.update_status"
+    campaignchain.activity.validator.twitter.update_status:
+        class: CampaignChain\Activity\TwitterBundle\Validator\UpdateStatus
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@campaignchain.channel.twitter.rest.client"
             - "%campaignchain_channel_twitter.max_duplicate_interval%"
+            - "@campaignchain.core.util.scheduler"
