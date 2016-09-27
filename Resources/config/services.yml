@@ -49,3 +49,4 @@ services:
             - "@campaignchain.channel.twitter.rest.client"
             - "%campaignchain_channel_twitter.max_duplicate_interval%"
             - "@campaignchain.core.util.scheduler"
+            - "@router"
