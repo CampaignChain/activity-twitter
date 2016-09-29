@@ -26,7 +26,7 @@ use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
 use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
-use CampaignChain\Activity\TwitterBundle\Validator\UpdateStatus as Validator;
+use CampaignChain\Operation\TwitterBundle\Validator\UpdateStatus as Validator;
 
 class UpdateStatusHandler extends AbstractActivityHandler
 {
@@ -162,7 +162,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
     {
         if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
             // Validate whether we can execute the Activity?
-            $isExecutable = $this->validator->isExecutableInChannel(
+            $isExecutable = $this->validator->isExecutableByChannel(
                 $this->detailService->getContent($operation), new \DateTime()
             );
             if(!$isExecutable['status']) {

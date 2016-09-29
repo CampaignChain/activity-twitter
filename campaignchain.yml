@@ -23,8 +23,6 @@ modules:
             edit_modal: campaignchain_activity_twitter_update_status_edit_modal
             edit_api: campaignchain_activity_twitter_update_status_edit_api
             read: campaignchain_activity_twitter_update_status_read
-        services:
-            validator: campaignchain.activity.validator.twitter.update_status
         hooks:
             default:
                 campaignchain-due: true
