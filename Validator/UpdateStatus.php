@@ -212,27 +212,13 @@ class UpdateStatus extends AbstractActivityValidator
      */
     public function isExecutableInCampaign($content, \DateTime $startDate)
     {
-        /** @var Campaign $campaign */
-        $campaign = $content->getOperation()->getActivity()->getCampaign();
+        $errMsg = 'The campaign interval must be more than '
+            .$this->maxDuplicateInterval.' '
+            .'to avoid a '
+            .'<a href="https://twittercommunity.com/t/duplicate-tweets/13264">duplicate Tweet error</a>.';
 
-        if($campaign->getInterval()){
-            $campaignIntervalDate = new \DateTime();
-            $campaignIntervalDate->modify($campaign->getInterval());
-            $maxDuplicateIntervalDate = new \DateTime();
-            $maxDuplicateIntervalDate->modify('+'.$this->maxDuplicateInterval);
-
-            if($maxDuplicateIntervalDate > $campaignIntervalDate){
-                return array(
-                    'status' => false,
-                    'message' =>
-                        'The campaign interval must be more than '
-                        .ltrim($this->maxDuplicateInterval, '+').' '
-                        .'to avoid a '
-                        .'<a href="https://twittercommunity.com/t/duplicate-tweets/13264">duplicate Tweet error</a>.'
-                );
-            }
-        }
-
-        return parent::isExecutableInCampaign($content, null);
+        return $this->isExecutableInCampaignByInterval(
+            $content, $startDate, '+'.$this->maxDuplicateInterval, $errMsg
+        );
     }
 }
