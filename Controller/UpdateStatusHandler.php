@@ -26,7 +26,7 @@ use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
 use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
-use CampaignChain\Operation\TwitterBundle\Validator\UpdateStatus as Validator;
+use CampaignChain\Operation\TwitterBundle\Validator\UpdateStatusValidator as Validator;
 
 class UpdateStatusHandler extends AbstractActivityHandler
 {
