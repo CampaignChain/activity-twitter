@@ -35,6 +35,12 @@ campaignchain_activity_twitter_update_status_read:
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:readAction }
 
 # REST routes are being created automatically via FOSRestBundle.
-campaignchain_activity_twitter_rest:
+campaignchain_activity_twitter_rest_public:
     resource: "@CampaignChainActivityTwitterBundle/Resources/config/routing_rest.yml"
     prefix: /api/v1/p/campaignchain/activity-twitter
+
+# We clone the public REST API for the private to make it accessible to the Web app
+campaignchain_activity_twitter_rest_private_public:
+    resource: "@CampaignChainActivityTwitterBundle/Resources/config/routing_rest.yml"
+    type: campaignchain-clone/api_private_
+    prefix: /api/private/p/campaignchain/activity-twitter
