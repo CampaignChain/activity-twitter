@@ -20,7 +20,7 @@ namespace CampaignChain\Activity\TwitterBundle\Controller;
 use CampaignChain\Channel\TwitterBundle\REST\TwitterClient;
 use CampaignChain\CoreBundle\Controller\Module\AbstractActivityHandler;
 use CampaignChain\Operation\TwitterBundle\Job\UpdateStatus;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Operation\TwitterBundle\EntityService\Status;
@@ -41,7 +41,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
     protected $validator;
 
     public function __construct(
-        EntityManager $em,
+        ManagerRegistry $managerRegistry,
         Status $detailService,
         TwitterClient $restClient,
         UpdateStatus $job,
@@ -50,7 +50,7 @@ class UpdateStatusHandler extends AbstractActivityHandler
         Validator $validator
     )
     {
-        $this->em = $em;
+        $this->em = $managerRegistry->getManager();
         $this->detailService = $detailService;
         $this->restClient = $restClient;
         $this->job = $job;

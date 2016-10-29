@@ -34,7 +34,7 @@ services:
     campaignchain.activity.controller.handler.twitter.update_status:
         class: CampaignChain\Activity\TwitterBundle\Controller\UpdateStatusHandler
         arguments:
-            - "@doctrine.orm.entity_manager"
+            - "@doctrine"
             - "@campaignchain.operation.twitter.status"
             - "@campaignchain.channel.twitter.rest.client"
             - "@campaignchain.job.operation.twitter.update_status"
