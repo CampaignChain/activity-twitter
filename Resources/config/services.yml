@@ -41,3 +41,4 @@ services:
             - "@session"
             - "@templating"
             - "@campaignchain.validator.operation.twitter.update_status"
+            - "@campaignchain.core.util.scheduler"
