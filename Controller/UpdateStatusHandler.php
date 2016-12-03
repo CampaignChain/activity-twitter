@@ -104,7 +104,13 @@ class UpdateStatusHandler extends AbstractActivityHandler
         $this->publishNow($operation);
     }
 
-    public function readAction(Operation $operation)
+    /**
+     * @param Operation $operation
+     * @param bool $isModal Modal view yes or no?
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function readAction(Operation $operation, $isModal = false)
     {
         $status = $this->detailService->getStatusByOperation($operation);
 
@@ -150,8 +156,14 @@ class UpdateStatusHandler extends AbstractActivityHandler
 
         $tweetUrl = $status->getUrl();
 
+        if(!$isModal){
+            $twigTpl = 'CampaignChainOperationTwitterBundle::read.html.twig';
+        } else {
+            $twigTpl = 'CampaignChainOperationTwitterBundle::read_modal.html.twig';
+        }
+
         return $this->templating->renderResponse(
-            'CampaignChainOperationTwitterBundle::read.html.twig',
+            $twigTpl,
             array(
                 'page_title' => $operation->getActivity()->getName(),
                 'tweet_is_protected' => $isProtected,
