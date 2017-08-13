@@ -121,15 +121,11 @@ class UpdateStatusHandler extends AbstractActivityHandler
         $notAccessible = false;
 
         try {
-            $request = $connection->get('statuses/oembed.json?id='.$status->getIdStr());
-            $response = $request->send()->json();
+            $response = $connection->getOembed($status->getIdStr());
             $message = $response['html'];
         } catch (\Exception $e) {
             // Check whether it is a protected tweet.
-            if(
-                'Forbidden' == $e->getResponse()->getReasonPhrase() &&
-                '403'       == $e->getResponse()->getStatusCode()
-            ){
+            if('403' == $e->getCode()){
                 $this->session->getFlashBag()->add(
                     'warning',
                     'This is a protected tweet.'
