@@ -13,29 +13,29 @@
 # limitations under the License.
 
 campaignchain_activity_twitter_update_status_new:
-    pattern:  /activity/twitter/update-status/new
+    path:  /activity/twitter/update-status/new
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:newAction }
 
 campaignchain_activity_twitter_update_status_edit:
-    pattern:  /activity/twitter/update-status/{id}/edit
+    path:  /activity/twitter/update-status/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:editAction }
 
 campaignchain_activity_twitter_update_status_edit_modal:
-    pattern:  /modal/activity/twitter/update-status/{id}/edit
+    path:  /modal/activity/twitter/update-status/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:editModalAction }
 
 campaignchain_activity_twitter_update_status_edit_api:
-    pattern:  /api/private/activity/twitter/update-status/byactivity/{id}/edit
+    path:  /api/private/activity/twitter/update-status/byactivity/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:editApiAction }
     options:
         expose: true
 
 campaignchain_activity_twitter_update_status_read:
-    pattern:  /activity/twitter/update-status/{id}
+    path:  /activity/twitter/update-status/{id}
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:readAction }
 
 campaignchain_activity_twitter_update_status_read_modal:
-    pattern:  /modal/activity/twitter/update-status/{id}
+    path:  /modal/activity/twitter/update-status/{id}
     defaults: { _controller: campaignchain.activity.controller.twitter.update_status:readModalAction }
     options:
         expose: true
